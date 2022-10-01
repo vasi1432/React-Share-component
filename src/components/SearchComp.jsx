@@ -29,8 +29,7 @@ const Bottom = styled.div`
 }
 `;
 const Contain = styled.div`
-  //   height: 272px;
-  padding: 16px;
+  padding: 16px 28px;
 `;
 const P = styled.p`
   font-weight: 400;
@@ -42,8 +41,8 @@ const P = styled.p`
 const FlexCenter = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-around;
-  padding: 12px 16px;
+  justify-content: space-between;
+  padding: 12px;
 `;
 const Heading = styled.div`
   font-weight: 400;
@@ -61,7 +60,7 @@ const Group = styled.div`
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
-  margin: 12px;
+  margin: 12px 0;
   display: flex;
   gap: 5px;
 `;
@@ -91,7 +90,6 @@ const Name = styled.div`
 const Data = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
   width: 60%;
 `;
 const InviteButton = styled.div`
@@ -234,6 +232,7 @@ const SearchComp = (props) => {
                   border: "none",
                   outline: "none",
                   backgroundColor: "#f3f4f6",
+                  color: " #6B7280",
                 }}
               >
                 <option>Full access</option>

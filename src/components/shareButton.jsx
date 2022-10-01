@@ -16,7 +16,7 @@ const MainBox = styled.div`
 const Top = styled.div`
   border-bottom: 1px solid #e5e7eb;
   display: flex;
-  padding: 12px 30px;
+  padding: 16px 12px 16px 20px;
   justify-content: space-between;
   align-items: center;
   // margin: 5px 12px;
@@ -30,14 +30,13 @@ const ContainBottom = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  aligh-items: center;
   gap: 10px;
 `;
 const DefaultAccess = styled.div`
-display:flex;
-flex-direction-column;
-gap:165px;
-justify-content:center;
+  display: flex;
+  gap: 165px;
+  justify-content: space-between;
+  align-items: center;
 `;
 const Bottom = styled.div`
   height: 48px;
@@ -62,11 +61,12 @@ const FlexSpaceAround = styled.div`
   padding: 2px 12px;
 `;
 const Select = styled.select`
+  color: #6b7280;
   outline: none;
   font-size: 12px;
   border: none;
   height: 25px;
-  margin-top: 30px;
+  line-height: 16px;
 `;
 const Flex = styled.div`
   display: flex;
@@ -83,9 +83,12 @@ const P = styled.p`
 `;
 const ShareButtonWrapper = styled.div`
   background-color: black;
-  width: 5%;
   border-radius: 4px;
   margin: 10px;
+  display: flex;
+  align-items: center;
+  width: 80px;
+  justify-content: center;
 `;
 const GroupIconWrapper = styled.div`
   background-color: #6b7280;
@@ -98,7 +101,11 @@ const SelectedCardWrapper = styled.div`
   gap: 18px;
   align-items: center;
 `;
-
+const CopyLink = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
 const ShareButton = ({ data, selected, onSelect, onRemove }) => {
   const [showPopUp, setShowPopUp] = useState(false);
   const [showSearchBox, setShowSearchBox] = useState(false);
@@ -151,6 +158,7 @@ const ShareButton = ({ data, selected, onSelect, onRemove }) => {
             backgroundColor: "black",
             color: "white",
             borderRadius: "4px",
+            border: "none",
           }}
           onClick={handleShowPopUp}
         >
@@ -182,7 +190,7 @@ const ShareButton = ({ data, selected, onSelect, onRemove }) => {
                 placeholder="People, emails, groups"
                 onClick={handleShowSearchBox}
               />
-              <InputGroupText>Invite</InputGroupText>
+              <InputGroupText color={"#F9FAFB"}>Invite</InputGroupText>
             </InputGroup>
             <ContainBottom>
               <DefaultAccess>
@@ -252,10 +260,21 @@ const ShareButton = ({ data, selected, onSelect, onRemove }) => {
 
           <Bottom>
             <Flex>
-              <P>?</P>
+              <P
+                style={{
+                  border: "3px solid silver",
+                  padding: "0px 6px",
+                  borderRadius: "50%",
+                }}
+              >
+                ?
+              </P>
               <P>learn about sharing</P>
             </Flex>
-            <P>Copy link</P>
+            <CopyLink>
+              <img src="src\images\link.png" alt="" />
+              <P style={{ color: "black", fontWeight: "500" }}>Copy link</P>
+            </CopyLink>
           </Bottom>
         </MainBox>
       ) : (
