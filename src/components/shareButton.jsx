@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Container, Input, InputGroup } from "reactstrap";
 import { InputGroupText } from "reactstrap";
 import "../css/ShareButton.css";
 import styled from "styled-components";
 import SearchComp from "./SearchComp";
+import "../css/radio.css";
 
 const MainBox = styled.div`
   width: 512px;
@@ -14,7 +15,6 @@ const MainBox = styled.div`
   border-radius: 8px;
   box-shadow: 6px 9px 18px -11px;
 `;
-
 const Title = styled.h1`
   font-size: 1.5em;
   text-align: center;
@@ -47,19 +47,41 @@ const ShareButtonWrapper = styled.div`
   left: 30%;
 `;
 
-const ShareButton = () => {
+const ShareButton = ({ data, selected, onSelect, onRemove }) => {
   const [showPopUp, setShowPopUp] = useState(false);
   const [showSearchBox, setShowSearchBox] = useState(false);
-  const [selectedData, setSelectedData] = useState([]);
+  // const [selectedData, setSelectedData] = useState([]);
 
-  useEffect(() => {
-    let localTask = JSON.parse(localStorage.getItem("SelectedData"));
-    if (localTask === null || localTask === false || localTask === undefined) {
-      return;
-    }
+  const unselectedData = useMemo(() => {
+    console.log({ data, selected });
 
-    setSelectedData(localTask);
-  }, []);
+    const results = data.reduce((acc, current) => {
+      const { id, type } = current;
+
+      const hasPresentInSelected = selected.some((item) => item.id === id);
+      console.log({ hasPresentInSelected });
+      if (hasPresentInSelected) {
+        return acc;
+      }
+      if (!acc.hasOwnProperty(type)) {
+        acc[type] = [current];
+      } else {
+        acc[type].push(current);
+      }
+      return acc;
+    }, {});
+    console.log({ results });
+    return results;
+  }, [selected, data]);
+
+  console.log({ unselectedData });
+  // const handleAddNewItems = (items) => {
+  //   console.log({ selectedData, items });
+  //   const updatedItems = [...selectedData, ...items];
+  //   console.log({ updatedItems });
+  //   setSelectedData(updatedItems);
+  //   localStorage.setItem("SelectedData", JSON.stringify(updatedItems));
+  // };
 
   const handleShowPopUp = () => {
     if (showPopUp === false) {
@@ -75,19 +97,25 @@ const ShareButton = () => {
   };
 
   const handleRemoveSelectedData = (e, item) => {
-    let access = e.target.value;
-    if (access === "Remove") {
-      const filteredData = selectedData.filter((elem) => {
-        return item.id !== elem.id;
-      });
-      setSelectedData(filteredData);
-      const localTask = JSON.parse(localStorage.getItem("SelectedData"));
-      const filteredLocalTask = localTask.filter((elem) => {
-        return item.id !== elem.id;
-      });
-      console.log("filteredLocalTask", filteredLocalTask);
-      localStorage.setItem("SelectedData", JSON.stringify(filteredLocalTask));
+    const { value } = e.target;
+    if (value !== "Remove") {
+      return;
     }
+    onRemove(item);
+
+    // let access = e.target.value;
+    // if (access === "Remove") {
+    //   const filteredData = selectedData.filter((elem) => {
+    //     return item.id !== elem.id;
+    //   });
+    //   setSelectedData(filteredData);
+    //   const localTask = JSON.parse(localStorage.getItem("SelectedData"));
+    //   const filteredLocalTask = localTask.filter((elem) => {
+    //     return item.id !== elem.id;
+    //   });
+    //   console.log("filteredLocalTask", filteredLocalTask);
+    //   localStorage.setItem("SelectedData", JSON.stringify(filteredLocalTask));
+    // }
   };
   return (
     <>
@@ -118,7 +146,7 @@ const ShareButton = () => {
               </div>
             </Flex>
             <div className="part1-right">
-              <input type="checkbox" />
+              <input type="checkbox" name="radio" className="cm-toggle" />
             </div>
           </FlexSpaceAround>
 
@@ -168,39 +196,37 @@ const ShareButton = () => {
                   <option style={{ color: "red" }}>No access</option>
                 </select>
               </FlexSpaceAround>
-              {selectedData.map((item) => {
+              {selected.map((item) => {
                 return (
-                  <>
-                    <FlexSpaceAround style={{ margin: "8px" }}>
-                      <div style={{ display: "flex", gap: "8px" }}>
-                        <div style={{ marginTop: "5px" }}>
-                          <img src={item.img} alt="" />
-                        </div>
-                        <div>
-                          <h6 style={{ margin: "0px" }}>{item.name}</h6>
-                          <P>{item.email}</P>
-                        </div>
+                  <FlexSpaceAround style={{ margin: "8px" }} key={item.id}>
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <div style={{ marginTop: "5px" }}>
+                        <img src={item.img} alt="" />
                       </div>
                       <div>
-                        <select
-                          onClick={(e) => {
-                            handleRemoveSelectedData(e, item);
-                          }}
-                          style={{
-                            fontSize: "12px",
-                            border: "none",
-                            height: "25px",
-                          }}
-                        >
-                          <option>{item.access}</option>
-                          <option>Can edit</option>
-                          <option>Can view</option>
-                          <option style={{ color: "red" }}>No access</option>
-                          <option style={{ color: "red" }}>Remove</option>
-                        </select>
+                        <h6 style={{ margin: "0px" }}>{item.name}</h6>
+                        <P>{item.email}</P>
                       </div>
-                    </FlexSpaceAround>
-                  </>
+                    </div>
+                    <div>
+                      <select
+                        onClick={(e) => {
+                          handleRemoveSelectedData(e, item);
+                        }}
+                        style={{
+                          fontSize: "12px",
+                          border: "none",
+                          height: "25px",
+                        }}
+                      >
+                        <option>{item.access}</option>
+                        <option>Can edit</option>
+                        <option>Can view</option>
+                        <option style={{ color: "red" }}>No access</option>
+                        <option style={{ color: "red" }}>Remove</option>
+                      </select>
+                    </div>
+                  </FlexSpaceAround>
                 );
               })}
             </FlexSpaceAround>
@@ -231,7 +257,8 @@ const ShareButton = () => {
         <SearchComp
           setShowPopUp={setShowPopUp}
           setShowSearchBox={setShowSearchBox}
-          setSelectedData={setSelectedData}
+          onSaveData={onSelect}
+          data={unselectedData}
         ></SearchComp>
       ) : (
         <div></div>

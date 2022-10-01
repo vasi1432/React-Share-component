@@ -6,24 +6,24 @@ import styled from "styled-components";
 import Dropdown from "react-bootstrap/Dropdown";
 
 const MainBox = styled.div`
-  height: 366px;
+  //   height: 366px;
   width: 512px;
   border: 1px solid silver;
   position: absolute;
-  top: 25%;
+  top: 26%;
   left: 30%;
   border-radius: 8px;
   box-shadow: 6px 9px 18px -11px;
 `;
 const Top = styled.div`
-  height: 58px;
+  //   height: 58px;
   background-color: #f3f4f6;
   border-bottom: 1px solid #e5e7eb;
   border-radius: 8px 8px 0px 0px;
   position: relative;
 `;
 const Bottom = styled.div`
-  height: 36px;
+//   height: 36px;
   background-color: #f3f4f6;
   border-top: 1px solid #e5e7eb;
   border-radius:0px 0px 8px 8px;
@@ -32,7 +32,7 @@ const Bottom = styled.div`
 }
 `;
 const Contain = styled.div`
-  height: 272px;
+  //   height: 272px;
   padding: 16px;
 `;
 const P = styled.p`
@@ -71,6 +71,7 @@ const Group = styled.div`
 const Absolute = styled.div`
   position: absolute;
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   border-radius: 4px;
   left: 10px;
@@ -84,84 +85,6 @@ const GroupIconWrapper = styled.div`
 `;
 
 const SearchComp = (props) => {
-  const [userData, setUserData] = useState({
-    person: [
-      {
-        id: 0,
-        name: "Wade Cooper",
-        email: "wade122.ooper@gmail.com",
-        img: "src/images/wade.png",
-        access: "No access",
-      },
-      {
-        id: 1,
-        name: "Arlene Mccoy",
-        email: "arlene12mccoy@gmail.com",
-        img: "src/images/arlene.png",
-        access: "No access",
-      },
-      {
-        id: 2,
-        name: "Tom cook",
-        email: "tom@oslash.com",
-        img: "src/images/wade.png",
-        access: "No access",
-      },
-    ],
-
-    group: [
-      {
-        id: 0,
-        name: "Product",
-        img: "P",
-      },
-      {
-        id: 1,
-        name: "Engineering",
-        img: "E",
-      },
-    ],
-  });
-
-  const copyData = {
-    person: [
-      {
-        id: 0,
-        name: "Wade Cooper",
-        email: "wade122.ooper@gmail.com",
-        img: "src/images/wade.png",
-        access: "No access",
-      },
-      {
-        id: 1,
-        name: "Arlene Mccoy",
-        email: "arlene12mccoy@gmail.com",
-        img: "src/images/arlene.png",
-        access: "No access",
-      },
-      {
-        id: 2,
-        name: "Tom cook",
-        email: "tom@oslash.com",
-        img: "src/images/wade.png",
-        access: "No access",
-      },
-    ],
-
-    group: [
-      {
-        id: 0,
-        name: "Product",
-        img: "P",
-      },
-      {
-        id: 1,
-        name: "Engineering",
-        img: "E",
-      },
-    ],
-  };
-
   const [selectedData, setSelecteddata] = useState([]);
 
   const handleSearch = (e) => {
@@ -199,11 +122,45 @@ const SearchComp = (props) => {
   };
 
   const handleInviteSent = () => {
-    props.setSelectedData(selectedData);
+    props.onSaveData(selectedData);
     props.setShowPopUp(true);
     props.setShowSearchBox(false);
 
-    localStorage.setItem("SelectedData", JSON.stringify(selectedData));
+    // localStorage.setItem("SelectedData", JSON.stringify(selectedData));
+  };
+
+  const renderSearchList = () => {
+    const types = Object.keys(props.data);
+    const finalList = [];
+    for (let i = 0; i < types.length; i++) {
+      const element = types[i];
+
+      const message = `Select a ${element}`;
+      const elementList = props.data[element].map((item) => {
+        return (
+          <Group
+            onClick={() => {
+              handleSelectedData(item);
+            }}
+            key={item.id}
+          >
+            {item.img ? (
+              <img src={item.img} alt="" />
+            ) : (
+              <GroupIconWrapper>
+                {item.name.charAt(0).toUpperCase()}
+              </GroupIconWrapper>
+            )}
+            <div>{item.name}</div>
+          </Group>
+        );
+      });
+
+      finalList.push(message);
+      finalList.push(elementList);
+    }
+
+    return finalList;
   };
 
   return (
@@ -211,11 +168,19 @@ const SearchComp = (props) => {
       <MainBox>
         <Top>
           <FlexCenter>
-            <Absolute>
-              {selectedData.map((elem) => {
-                return (
-                  <>
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "5px",
+                width: "60%",
+              }}
+            >
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                {selectedData.map((elem) => {
+                  return (
                     <div
+                      key={elem.id}
                       style={{
                         backgroundColor: " #e5e7eb",
                         borderRadius: "4px",
@@ -234,24 +199,39 @@ const SearchComp = (props) => {
                         <img src="src\images\cross.png" alt="" />
                       </span>
                     </div>
-                  </>
-                );
-              })}
-            </Absolute>
+                  );
+                })}
+              </div>
 
-            <input
-              type="text"
-              placeholder="Search emails, names or groups"
-              onChange={(e) => {
-                handleSearch(e);
-              }}
-              style={{
-                width: "80%",
-                backgroundColor: "#F3F4F6",
-                border: "none",
-              }}
-            />
-            <div style={{ display: "flex" }}>
+              <input
+                type="text"
+                placeholder={
+                  selectedData.length === 0
+                    ? "Search emails, names or groups"
+                    : ""
+                }
+                onChange={(e) => {
+                  handleSearch(e);
+                }}
+                style={
+                  selectedData.length === 0
+                    ? {
+                        width: "100%",
+                        backgroundColor: "#F3F4F6",
+                        border: "none",
+                        outline: "none",
+                      }
+                    : {
+                        width: "50%",
+                        backgroundColor: "#F3F4F6",
+                        border: "none",
+                        outline: "none",
+                      }
+                }
+              />
+            </div>
+
+            <div style={{ display: "flex", gap: "16px" }}>
               <select
                 onChange={(e) => {
                   handleInviteData(e);
@@ -259,6 +239,7 @@ const SearchComp = (props) => {
                 style={{
                   fontSize: "12px",
                   border: "none",
+                  outline: "none",
                   backgroundColor: "#f3f4f6",
                 }}
               >
@@ -271,9 +252,11 @@ const SearchComp = (props) => {
               <button
                 onClick={handleInviteSent}
                 style={{
-                  backgroundColor: "white",
-                  border: "none",
-                  padding: "5px 8px",
+                  backgroundColor: "#fff",
+                  padding: "3px 6px",
+                  border: "1px solid silver",
+                  borderRadius: "6px",
+                  fontSize: "13px",
                 }}
               >
                 Invite
@@ -281,47 +264,8 @@ const SearchComp = (props) => {
             </div>
           </FlexCenter>
         </Top>
-        <Contain>
-          <Heading>Select a person</Heading>
-          {userData.person.map((item) => {
-            return (
-              <>
-                <Person
-                  onClick={() => {
-                    handleSelectedData(item);
-                  }}
-                  key={item.id}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "8px",
-                    }}
-                  >
-                    <img src={item.img} alt="" />
-                    <div>{item.name}</div>
-                  </div>
-                </Person>
-              </>
-            );
-          })}
-          <Heading>Select a group</Heading>
-          {userData.group.map((item) => {
-            return (
-              <>
-                <Group
-                  onClick={() => {
-                    handleSelectedData(item);
-                  }}
-                  key={item.id}
-                >
-                  <GroupIconWrapper>{item.img}</GroupIconWrapper>
-                  <div>{item.name}</div>
-                </Group>
-              </>
-            );
-          })}
-        </Contain>
+
+        <Contain>{renderSearchList()}</Contain>
         <Bottom>
           <P>
             <span>?</span> learn about sharing
