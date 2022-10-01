@@ -9,11 +9,46 @@ import "../css/radio.css";
 const MainBox = styled.div`
   width: 512px;
   border: 1px solid silver;
-  position: absolute;
-  top: 25%;
-  left: 30%;
   border-radius: 8px;
-  box-shadow: 6px 9px 18px -11px;
+  box-shadow: 6px 9px 10px -11px;
+  margin: 0px 10px;
+`;
+const Top = styled.div`
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  padding: 12px 30px;
+  justify-content: space-between;
+  align-items: center;
+  // margin: 5px 12px;
+`;
+const Contain = styled.div`
+  padding: 16px 12px;
+  justify-content: space-between;
+  align-items: center;
+`;
+const ContainBottom = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  aligh-items: center;
+  gap: 10px;
+`;
+const DefaultAccess = styled.div`
+display:flex;
+flex-direction-column;
+gap:165px;
+justify-content:center;
+`;
+const Bottom = styled.div`
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 6px;
+  background-color: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  border-radius: 0px 0px 8px 8px;
+  padding: 10px;
 `;
 const Title = styled.h1`
   font-size: 1.5em;
@@ -26,40 +61,54 @@ const FlexSpaceAround = styled.div`
   aligh-items: center;
   padding: 2px 12px;
 `;
+const Select = styled.select`
+  outline: none;
+  font-size: 12px;
+  border: none;
+  height: 25px;
+  margin-top: 30px;
+`;
 const Flex = styled.div`
   display: flex;
   gap: 18px;
   align-items: center;
 `;
+
 const P = styled.p`
   font-weight: 400;
   font-size: 14px;
   line-height: 20px;
-  color: "#6b7280";
+  color: #6b7280;
   margin: 0px;
 `;
 const ShareButtonWrapper = styled.div`
   background-color: black;
   width: 5%;
   border-radius: 4px;
-  position: absolute;
-  top: 20%;
-  left: 30%;
+  margin: 10px;
+`;
+const GroupIconWrapper = styled.div`
+  background-color: #6b7280;
+  color: white;
+  border-radius: 4px;
+  padding: 0px 4px;
+`;
+const SelectedCardWrapper = styled.div`
+  display: flex;
+  gap: 18px;
+  align-items: center;
 `;
 
 const ShareButton = ({ data, selected, onSelect, onRemove }) => {
   const [showPopUp, setShowPopUp] = useState(false);
   const [showSearchBox, setShowSearchBox] = useState(false);
-  // const [selectedData, setSelectedData] = useState([]);
 
   const unselectedData = useMemo(() => {
-    console.log({ data, selected });
-
     const results = data.reduce((acc, current) => {
       const { id, type } = current;
 
       const hasPresentInSelected = selected.some((item) => item.id === id);
-      console.log({ hasPresentInSelected });
+
       if (hasPresentInSelected) {
         return acc;
       }
@@ -70,18 +119,9 @@ const ShareButton = ({ data, selected, onSelect, onRemove }) => {
       }
       return acc;
     }, {});
-    console.log({ results });
+
     return results;
   }, [selected, data]);
-
-  console.log({ unselectedData });
-  // const handleAddNewItems = (items) => {
-  //   console.log({ selectedData, items });
-  //   const updatedItems = [...selectedData, ...items];
-  //   console.log({ updatedItems });
-  //   setSelectedData(updatedItems);
-  //   localStorage.setItem("SelectedData", JSON.stringify(updatedItems));
-  // };
 
   const handleShowPopUp = () => {
     if (showPopUp === false) {
@@ -102,20 +142,6 @@ const ShareButton = ({ data, selected, onSelect, onRemove }) => {
       return;
     }
     onRemove(item);
-
-    // let access = e.target.value;
-    // if (access === "Remove") {
-    //   const filteredData = selectedData.filter((elem) => {
-    //     return item.id !== elem.id;
-    //   });
-    //   setSelectedData(filteredData);
-    //   const localTask = JSON.parse(localStorage.getItem("SelectedData"));
-    //   const filteredLocalTask = localTask.filter((elem) => {
-    //     return item.id !== elem.id;
-    //   });
-    //   console.log("filteredLocalTask", filteredLocalTask);
-    //   localStorage.setItem("SelectedData", JSON.stringify(filteredLocalTask));
-    // }
   };
   return (
     <>
@@ -135,7 +161,7 @@ const ShareButton = ({ data, selected, onSelect, onRemove }) => {
 
       {showPopUp ? (
         <MainBox>
-          <FlexSpaceAround className="part1">
+          <Top className="part-1">
             <Flex className="part1-left">
               <span>
                 <img src="src\images\Iconglobe.png" alt="" />
@@ -148,9 +174,9 @@ const ShareButton = ({ data, selected, onSelect, onRemove }) => {
             <div className="part1-right">
               <input type="checkbox" name="radio" className="cm-toggle" />
             </div>
-          </FlexSpaceAround>
+          </Top>
 
-          <Container className="part2">
+          <Contain className="part2">
             <InputGroup className="part2-top">
               <Input
                 placeholder="People, emails, groups"
@@ -158,56 +184,48 @@ const ShareButton = ({ data, selected, onSelect, onRemove }) => {
               />
               <InputGroupText>Invite</InputGroupText>
             </InputGroup>
-            <FlexSpaceAround
-              style={{ flexDirection: "column" }}
-              className=" part2-bottom"
-            >
-              <FlexSpaceAround>
-                <Flex>
-                  <span
-                    style={{
-                      background: "#111827",
-                      borderRadius: "4px",
-                      height: "35px",
-                    }}
-                  >
+            <ContainBottom>
+              <DefaultAccess>
+                <Flex style={{ marginTop: "12px" }}>
+                  <span>
                     <img
                       src="src\images\Oslash.png"
                       alt=""
                       style={{ width: "35px" }}
                     />
                   </span>
-                  <div style={{ marginTop: "10px" }}>
+                  <div>
                     <h6>Everyone at OSlash</h6>
                     <P>25 workspace members</P>
                   </div>
                 </Flex>
-                <select
-                  style={{
-                    fontSize: "12px",
-                    border: "none",
-                    height: "25px",
-                    marginTop: "10px",
-                  }}
-                >
+
+                <Select>
                   <option>Full access</option>
                   <option>Can edit</option>
                   <option>Can view</option>
                   <option style={{ color: "red" }}>No access</option>
-                </select>
-              </FlexSpaceAround>
+                </Select>
+              </DefaultAccess>
+
               {selected.map((item) => {
                 return (
                   <FlexSpaceAround style={{ margin: "8px" }} key={item.id}>
-                    <div style={{ display: "flex", gap: "8px" }}>
+                    <SelectedCardWrapper>
                       <div style={{ marginTop: "5px" }}>
-                        <img src={item.img} alt="" />
+                        {item.img ? (
+                          <img src={item.img} alt="" />
+                        ) : (
+                          <GroupIconWrapper>
+                            {item.name.charAt(0).toUpperCase()}
+                          </GroupIconWrapper>
+                        )}
                       </div>
                       <div>
                         <h6 style={{ margin: "0px" }}>{item.name}</h6>
                         <P>{item.email}</P>
                       </div>
-                    </div>
+                    </SelectedCardWrapper>
                     <div>
                       <select
                         onClick={(e) => {
@@ -229,25 +247,16 @@ const ShareButton = ({ data, selected, onSelect, onRemove }) => {
                   </FlexSpaceAround>
                 );
               })}
-            </FlexSpaceAround>
-          </Container>
+            </ContainBottom>
+          </Contain>
 
-          <FlexSpaceAround
-            className="part3"
-            style={{
-              fontSize: "6px",
-              backgroundColor: " #f9fafb",
-              borderTop: "1px solid #e5e7eb",
-              borderRadius: " 0px 0px 8px 8px",
-              padding: "10px",
-            }}
-          >
+          <Bottom>
             <Flex>
               <P>?</P>
               <P>learn about sharing</P>
             </Flex>
             <P>Copy link</P>
-          </FlexSpaceAround>
+          </Bottom>
         </MainBox>
       ) : (
         <div></div>

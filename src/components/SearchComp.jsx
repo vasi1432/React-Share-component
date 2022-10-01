@@ -6,12 +6,9 @@ import styled from "styled-components";
 import Dropdown from "react-bootstrap/Dropdown";
 
 const MainBox = styled.div`
-  //   height: 366px;
   width: 512px;
   border: 1px solid silver;
-  position: absolute;
-  top: 26%;
-  left: 30%;
+  margin: 10px;
   border-radius: 8px;
   box-shadow: 6px 9px 18px -11px;
 `;
@@ -83,7 +80,27 @@ const GroupIconWrapper = styled.div`
   border-radius: 4px;
   padding: 0px 4px;
 `;
-
+const Name = styled.div`
+  background-color: #e5e7eb;
+  border-radius: 4px;
+  padding: 8px 5px;
+  font-size: 14px;
+  display: flex;
+  gap: 6px;
+`;
+const Data = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  width: 60%;
+`;
+const InviteButton = styled.div`
+  background-color: #fff;
+  padding: 3px 6px;
+  border: 1px solid silver;
+  border-radius: 6px;
+  font-size: 13px;
+`;
 const SearchComp = (props) => {
   const [selectedData, setSelecteddata] = useState([]);
 
@@ -92,11 +109,6 @@ const SearchComp = (props) => {
       item.name.toLowerCase().includes(e.target.value.toLowerCase())
     );
     setUserData({ ...userData, person: filteredPerson });
-
-    // const filteredGroup = copyData.group.filter((item) =>
-    //   item.name.toLowerCase().includes(e.target.value.toLowerCase())
-    // );
-    // setUserData({ ...userData, group: filteredGroup });
   };
 
   const handleSelectedData = (elem) => {
@@ -125,8 +137,6 @@ const SearchComp = (props) => {
     props.onSaveData(selectedData);
     props.setShowPopUp(true);
     props.setShowSearchBox(false);
-
-    // localStorage.setItem("SelectedData", JSON.stringify(selectedData));
   };
 
   const renderSearchList = () => {
@@ -168,28 +178,11 @@ const SearchComp = (props) => {
       <MainBox>
         <Top>
           <FlexCenter>
-            <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: "5px",
-                width: "60%",
-              }}
-            >
+            <Data>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
                 {selectedData.map((elem) => {
                   return (
-                    <div
-                      key={elem.id}
-                      style={{
-                        backgroundColor: " #e5e7eb",
-                        borderRadius: "4px",
-                        padding: "8px 5px",
-                        fontSize: "14px",
-                        display: "flex",
-                        gap: "6px",
-                      }}
-                    >
+                    <Name key={elem.id}>
                       {elem.name}
                       <span
                         onClick={() => {
@@ -198,7 +191,7 @@ const SearchComp = (props) => {
                       >
                         <img src="src\images\cross.png" alt="" />
                       </span>
-                    </div>
+                    </Name>
                   );
                 })}
               </div>
@@ -229,7 +222,7 @@ const SearchComp = (props) => {
                       }
                 }
               />
-            </div>
+            </Data>
 
             <div style={{ display: "flex", gap: "16px" }}>
               <select
@@ -249,18 +242,7 @@ const SearchComp = (props) => {
                 <option style={{ color: "red" }}>No access</option>
               </select>
 
-              <button
-                onClick={handleInviteSent}
-                style={{
-                  backgroundColor: "#fff",
-                  padding: "3px 6px",
-                  border: "1px solid silver",
-                  borderRadius: "6px",
-                  fontSize: "13px",
-                }}
-              >
-                Invite
-              </button>
+              <InviteButton onClick={handleInviteSent}>Invite</InviteButton>
             </div>
           </FlexCenter>
         </Top>

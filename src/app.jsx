@@ -29,11 +29,13 @@ const initialState = [
     id: 3,
     name: "Product",
     type: "group",
+    access: "No access",
   },
   {
     id: 4,
     name: "Engineering",
     type: "group",
+    access: "No access",
   },
 ];
 
